@@ -10,7 +10,7 @@ from categorize import categorize
 os.makedirs("input", exist_ok=True)
 
 st.set_page_config(page_title="Receipt Analyzer", page_icon="🧾")
-st.title("🧾 Receipt Analyzer")
+st.title(" Receipt Analyzer")
 
 file = st.file_uploader("Upload receipt", type=["jpg", "jpeg", "png"])
 
@@ -26,29 +26,29 @@ if file:
     with col2:
         with st.spinner("Processing..."):
 
-            # 🔹 OCR
+            # OCR
             text = extract_text(path)
-            st.text_area("📝 OCR Output", text, height=200)
+            st.text_area(" OCR Output", text, height=200)
             st.text(text)
 
-            # 🔹 LLM Parsing
+            # LLM Parsing
             result = parse(text)
-            st.write("🔍 Parsed Result:", result)
+            st.write(" Parsed Result:", result)
 
             if "items" in result:
                 result["items"] = categorize(result["items"])
 
-    # ❌ ERROR HANDLING
+    # ERROR HANDLING
     if "error" in result:
-        st.error(f"⚠️ {result['error']}")
+        st.error(f" {result['error']}")
 
     else:
         items = result.get("items", [])
 
-        # =========================
-        # 📊 Spending Summary
-        # =========================
-        st.subheader("📊 Spending Summary")
+        
+        # Spending Summary
+        
+        st.subheader(" Spending Summary")
 
         totals = {}
 
@@ -61,7 +61,7 @@ if file:
             except:
                 price = 0.0
 
-            # 🔥 FIX unrealistic OCR values
+            #  FIX unrealistic OCR values
             if price > 5000:
                 if not any(word in name for word in ["phone", "iphone", "tv", "laptop"]):
                     if price >= 1000:
@@ -79,11 +79,11 @@ if file:
             for i, (cat, amt) in enumerate(sorted(totals.items(), key=lambda x: -x[1])):
                 cols[i % num_cols].metric(cat, f"₹{amt:,.2f}")
         else:
-            st.warning("⚠️ No categories found")
+            st.warning(" No categories found")
 
-        # =========================
-        # 🧾 Total
-        # =========================
+        
+        # Total
+    
         st.divider()
 
         total_value = result.get("total", "")
@@ -95,16 +95,16 @@ if file:
 
         st.metric("🧾 Total", f"₹{total_value:,.2f}")
 
-        # =========================
-        # 🛒 Items Table
-        # =========================
+        
+        # Items Table
+        
         st.subheader("🛒 Items")
         st.table(items if items else [])
 
-        # =========================
-        # 📊 Pie Chart
-        # =========================
-        st.subheader("📊 Expense Distribution")
+        
+        # Pie Chart
+        
+        st.subheader(" Expense Distribution")
 
         if totals:
             df = pd.DataFrame(list(totals.items()), columns=["category", "amount"])
@@ -115,12 +115,12 @@ if file:
 
             st.pyplot(fig)
         else:
-            st.warning("⚠️ No data for chart")
+            st.warning(" No data for chart")
 
-        # =========================
-        # ⬇️ Download JSON
-        # =========================
-        st.subheader("⬇️ Download Data")
+        
+        #  Download JSON
+        # 
+        st.subheader(" Download Data")
 
         json_data = json.dumps(result, indent=4)
 
